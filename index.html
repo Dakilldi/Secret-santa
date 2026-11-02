@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Secret Santa 🎅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#ffd76a;--red:#c8102e;--red2:#e01b3c;--cream:#fffaf0;--wine:#7a0f1f;--pine:#2f6b4f}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{min-height:100vh;overflow:hidden;font-family:Lora,Georgia,serif;color:#fff;text-align:center;background:radial-gradient(ellipse at 50% 0%,#1f5a43 0%,#0f3326 45%,#071a12 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;-webkit-tap-highlight-color:transparent}
+.snow{position:fixed;inset:0;pointer-events:none;z-index:0}
+.flake{position:absolute;top:-30px;color:#fff;animation:fall linear infinite;text-shadow:0 0 6px rgba(255,255,255,.6)}
+@keyframes fall{to{transform:translate3d(var(--dx,20px),110vh,0) rotate(360deg)}}
+.wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;max-width:440px}
+h1{font-family:"Mountains of Christmas",Georgia,serif;font-size:clamp(34px,10vw,48px);color:var(--gold);text-shadow:0 0 18px rgba(255,180,0,.55);line-height:1.1;margin-bottom:8px}
+.sub{font-size:17px;opacity:.9;min-height:26px;transition:opacity .4s}
+.stage{position:relative;width:220px;height:330px;margin-top:20px;cursor:pointer}
+.gift{position:absolute;left:10px;bottom:20px;width:200px;height:190px}
+.gift.idle{animation:wiggle 2.2s ease-in-out infinite}
+@keyframes wiggle{0%,70%,100%{transform:rotate(0)}75%{transform:rotate(-4deg)}80%{transform:rotate(4deg)}85%{transform:rotate(-3deg)}90%{transform:rotate(2deg)}}
+.gift.shake{animation:shake .45s ease-in-out 3}
+@keyframes shake{0%,100%{transform:rotate(0) scale(1)}25%{transform:rotate(-8deg) scale(1.03)}75%{transform:rotate(8deg) scale(1.03)}}
+.box{position:absolute;bottom:0;left:0;width:200px;height:145px;background:linear-gradient(135deg,var(--red2),var(--red) 60%,#9e0c24);border-radius:8px;box-shadow:0 18px 30px rgba(0,0,0,.55),inset 0 -10px 20px rgba(0,0,0,.18);z-index:3;overflow:hidden}
+.box:before{content:"";position:absolute;left:86px;width:28px;height:100%;background:linear-gradient(90deg,#e8b94a,var(--gold),#e8b94a)}
+.box:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(255,255,255,.18) 0 3px,transparent 4px) 0 0/34px 34px}
+.lid{position:absolute;bottom:135px;left:-10px;width:220px;height:46px;background:linear-gradient(135deg,#f0324f,var(--red2));border-radius:8px;z-index:5;box-shadow:0 6px 12px rgba(0,0,0,.35);transform-origin:80% 100%}
+.lid:before{content:"";position:absolute;left:96px;width:28px;height:100%;background:linear-gradient(90deg,#e8b94a,var(--gold),#e8b94a)}
+.bow{position:absolute;left:50%;top:-44px;transform:translateX(-50%);font-size:62px;line-height:1;filter:drop-shadow(0 4px 4px rgba(0,0,0,.35))}
+.lid.pop{animation:pop 1s cubic-bezier(.25,1.3,.55,1) forwards}
+@keyframes pop{to{transform:translate(120px,-260px) rotate(55deg);opacity:0}}
+.card{position:absolute;left:25px;bottom:40px;width:170px;padding:16px 10px 18px;background:var(--cream);color:var(--wine);border-radius:12px;border:3px solid var(--gold);z-index:2;box-shadow:0 10px 30px rgba(0,0,0,.4),0 0 40px rgba(255,215,106,.35);opacity:0}
+.card small{display:block;font-size:13px;font-style:italic;color:var(--pine)}
+.card b{display:block;font-family:"Mountains of Christmas",Georgia,serif;font-size:36px;line-height:1.1;margin-top:6px;word-break:break-word}
+.card.rise{animation:rise 1.4s cubic-bezier(.2,.9,.3,1.15) forwards}
+@keyframes rise{0%{opacity:1;transform:translateY(0) scale(.8)}100%{opacity:1;transform:translateY(-190px) scale(1.25)}}
+.glow{position:absolute;left:50%;bottom:120px;width:10px;height:10px;border-radius:50%;transform:translate(-50%,0);box-shadow:0 0 0 0 rgba(255,215,106,.0);z-index:1}
+.glow.on{animation:glow 1.2s ease-out forwards}
+@keyframes glow{0%{box-shadow:0 0 0 0 rgba(255,215,106,.9)}100%{box-shadow:0 0 120px 90px rgba(255,215,106,0)}}
+.conf{position:fixed;top:0;left:0;width:10px;height:14px;z-index:4;pointer-events:none;opacity:0}
+.hint{margin-top:6px;font-size:15px;color:var(--gold);animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{50%{opacity:.35}}
+.end{margin-top:10px;font-size:16px;line-height:1.6;opacity:0;transition:opacity 1s}
+.end.show{opacity:1}
+.end .budget{display:inline-block;margin-top:10px;padding:6px 14px;border:1px solid rgba(255,215,106,.5);border-radius:999px;color:var(--gold);font-size:15px}
+.err{font-size:17px;line-height:1.6}
+@media (prefers-reduced-motion:reduce){.flake{display:none}}
+</style>
+</head>
+<body>
+<div class="snow" id="snow"></div>
+<div class="wrap" id="app">
+  <h1 id="title">Joyeux Noël !</h1>
+  <p class="sub" id="sub">Le Père Noël t'a préparé un cadeau…</p>
+  <div class="stage" id="stage" role="button" aria-label="Ouvrir le cadeau" tabindex="0">
+    <div class="glow" id="glow"></div>
+    <div class="card" id="card"><small>Tu gâtes en secret…</small><b id="name"></b></div>
+    <div class="gift idle" id="gift"><div class="lid" id="lid"><span class="bow">🎀</span></div><div class="box"></div></div>
+  </div>
+  <p class="hint" id="hint">👆 Touche le cadeau pour l'ouvrir</p>
+  <div class="end" id="end">🤫 Chut… ça reste entre toi et le Père Noël !<br><span class="budget">🎁 Budget : 3000 F maximum</span></div>
+</div>
+<script>
+(function(){
+  var snow=document.getElementById('snow'),f=['❄','❅','❆'];
+  for(var i=0;i<28;i++){var s=document.createElement('span');s.className='flake';s.textContent=f[i%3];
+    s.style.left=(Math.random()*100)+'%';s.style.fontSize=(10+Math.random()*16)+'px';s.style.opacity=(.4+Math.random()*.6);
+    s.style.animationDuration=(7+Math.random()*9)+'s';s.style.animationDelay=(-Math.random()*14)+'s';s.style.setProperty('--dx',(Math.random()*80-40)+'px');snow.appendChild(s);}
+  var K='joyeux-noel-2026';
+  function dec(t){try{t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';var b=atob(t),o=new Uint8Array(b.length);
+    for(var i=0;i<b.length;i++)o[i]=b.charCodeAt(i)^K.charCodeAt(i%K.length);return JSON.parse(new TextDecoder().decode(o));}catch(e){return null}}
+  var d=dec((location.hash||'').slice(1));
+  if(!d||!d.n){document.getElementById('app').innerHTML='<h1>Oh oh oh…</h1><p class="err">Ce lien ne semble pas complet.<br>Ouvre le bouton directement depuis ton mail 🎅</p>';return;}
+  document.getElementById('title').textContent='Joyeux Noël '+d.g+'\u00a0!';
+  document.getElementById('name').textContent=d.n;
+  var opened=false,stage=document.getElementById('stage');
+  function open(){if(opened)return;opened=true;
+    var gift=document.getElementById('gift'),hint=document.getElementById('hint'),sub=document.getElementById('sub');
+    hint.style.display='none';sub.textContent='Voyons voir…';gift.classList.remove('idle');gift.classList.add('shake');
+    setTimeout(function(){document.getElementById('lid').classList.add('pop');document.getElementById('glow').classList.add('on');confetti();},1350);
+    setTimeout(function(){document.getElementById('card').classList.add('rise');sub.textContent='Le Père Noël a tiré au sort…';},1650);
+    setTimeout(function(){document.getElementById('end').classList.add('show');},3000);}
+  stage.addEventListener('click',open);stage.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')open();});
+  function confetti(){var r=stage.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height-150,c=['#ffd76a','#e01b3c','#ffffff','#3fa36b','#ffb300'];
+    for(var i=0;i<70;i++){var p=document.createElement('div');p.className='conf';p.style.background=c[i%c.length];
+      if(i%3==0)p.style.borderRadius='50%';document.body.appendChild(p);
+      var a=Math.random()*Math.PI*2,v=120+Math.random()*260,dx=Math.cos(a)*v,dy=Math.sin(a)*v-200,rot=Math.random()*720;
+      p.animate([{opacity:1,transform:'translate('+cx+'px,'+cy+'px) rotate(0)'},{opacity:1,transform:'translate('+(cx+dx*.7)+'px,'+(cy+dy*.7)+'px) rotate('+rot/2+'deg)',offset:.5},{opacity:0,transform:'translate('+(cx+dx)+'px,'+(cy+dy+380)+'px) rotate('+rot+'deg)'}],{duration:2200+Math.random()*1200,easing:'cubic-bezier(.2,.7,.4,1)',fill:'forwards'});}}
+})();
+</script>
+</body>
+</html>
